@@ -17,7 +17,32 @@ import matplotlib.pyplot as plt
 # Import datasets, classifiers and performance metrics
 from sklearn import datasets, metrics, svm
 from sklearn.model_selection import train_test_split
+import pdb
+# we will put all utils here
+# Proprocess data
+def preprocess_daata(data):
+    # flatten the images
+    n_samples = len(data)
+    data = data.reshape((n_samples, -1))
+    return data
 
+
+# Split data into 50% train and 50% test subsets
+def split_data(x, y, test_size, random_state=1):
+    X_train, X_test, y_train, y_test = train_test_split(
+    x, y, test_size=0.5, random_state=random_state)
+#shuffle=False then  random state will not work
+    return X_train, X_test, y_train, y_test
+# Train the of your choice with the model name parameter
+def train_model(x, y, model_params, model_type="svm"):
+    if model_type == "svm":
+    # Create a classifier: a support vector classifier
+        clf = svm.SVC
+    model = clf(**model_params)
+    # Train the model : Learn the digits on the train subset
+    #pdb.set_trace()
+    model.fit(x, y)
+    return model
 ###############################################################################
 # Digits dataset
 # --------------
@@ -33,7 +58,8 @@ from sklearn.model_selection import train_test_split
 # them using :func:`matplotlib.pyplot.imread`.
 
 # 1. Get Data
-digits = datasets.load_digits()
+#digits = datasets.load_digits()
+x,y = read_digits()
 
 # 2. Qualitative sanity check of the data
 _, axes = plt.subplots(nrows=1, ncols=4, figsize=(10, 3))
@@ -57,23 +83,19 @@ for ax, image, label in zip(axes, digits.images, digits.target):
 # subsequently be used to predict the value of the digit for the samples
 # in the test subset.
 
-# 3. Data Preprocessing
-# flatten the images
-n_samples = len(digits.images)
-data = digits.images.reshape((n_samples, -1))
 
-# 4. Data Spliting -- to create train and test sets
-# Split data into 50% train and 50% test subsets
-X_train, X_test, y_train, y_test = train_test_split(
-    data, digits.target, test_size=0.5, shuffle=False
-)
 
+
+# 3. Data Spliting -- to create train and test sets
+data = digits.images
+X_train, X_test, y_train, y_test = split_data(data, digits.target, test_size=0.3)
+
+# 4. Data Preprocessing
+X_train = preprocess_daata(data)
+X_test = preprocess_daata(data)
 
 # 5. Model Training 
-# Create a classifier: a support vector classifier
-clf = svm.SVC(gamma=0.001)
-# Learn the digits on the train subset
-clf.fit(X_train, y_train)
+model = train_model(X_train, y_train, {"gamma":0.001},model_type="svm")
 
 # 6. Getting Model predictions on test data set
 # Predict the value of the digit on the test subset
@@ -97,7 +119,7 @@ for ax, image, prediction in zip(axes, X_test, predicted):
 
 # 8. Evalutation
 print(
-    f"Classification report for classifier {clf}:\n"
+    f"Classification report for classifier {model}:\n"
     f"{metrics.classification_report(y_test, predicted)}\n"
 )
 
