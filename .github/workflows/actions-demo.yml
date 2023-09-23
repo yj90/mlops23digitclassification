@@ -20,6 +20,14 @@ jobs:
       - run: echo "🍏 This job's status is ${{ job.status }}."
       - name: Install dep
         run:  pip3 install --no-cache-dir -r requirements.txt
+
+      # Add your build and test steps here
+
+      - name: Print Dataset Information
+        run: |
+             echo "Dataset Information:"
+             echo "Total samples in the dataset: $TOTAL_SAMPLES"  # You can set this variable in your script
+             echo "Image size (height x width): $IMAGE_HEIGHT x $IMAGE_WIDTH"  
       - name: Run experiment
         run: python exp.py
           

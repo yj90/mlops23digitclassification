@@ -18,14 +18,28 @@ from utils import preprocess_data, split_data, train_model, read_digits, predict
 # 1. Get the dataset
 X, y = read_digits()
 
-# 3. Data splitting -- to create train and test sets
 
-# X_train, X_test, y_train, y_test = split_data(X,y, test_size=0.3)
+
+
+# Add these statements to your code
+# 2.1 The number of total samples in the dataset (train + test + dev)
+total_samples = len(X)
+print("Total samples in the dataset:", total_samples)
+
+# 2.2 Size (height and width) of the images in the dataset
+image_height, image_width = X[0].shape
+print("Image size (height x width):", image_height, "x", image_width)
+
+# 3. Data splitting -- to create train and test sets
 X_train, X_test, X_dev, y_train, y_test, y_dev = train_test_dev_split(X, y, test_size=0.3, dev_size=0.2)
+
 # 4. Data preprocessing
 X_train = preprocess_data(X_train)
 X_test = preprocess_data(X_test)
 X_dev = preprocess_data(X_dev)
+
+
+
 
 # HYPER PARAMETER TUNING
 # take all combinations of gamma and C
